@@ -12,23 +12,16 @@ enum Set[+A]:
       case Empty => z
       case NonEmpty(xh,xr) => foldLeft(xr, f(xh,z))(f)
 
-  def reverse: Set[A] =
-    def go[A](xs: Set[A], res: Set[A] = Empty ): Set[A] =
-      xs match
-        case Empty => res
-        case NonEmpty(xh, xl) => go(xl, NonEmpty(xh, res))
-    go(this)
-
   def unique[A](el: A): Boolean =
     foldLeft(this, true)( (xh,z) => if xh!=el then z else false)
 
   def insert[B >: A](el: B): Set[B] =
     def go(xs: Set[A]): Set[B] =
       if unique(el) then
-        NonEmpty(el, xs.reverse)
+        NonEmpty(el, xs)
       else
         xs
-    go(this).reverse
+    go(this)
 
 object Set:
   def empty[A]: Set[A] = Empty
@@ -40,6 +33,11 @@ object Set:
 enum List[+A]:
   case Nil
   case Cons(hd: A, tl: List[A])
+
+  def insert[B >: A](el: B): List[B] =
+    def go(xs: List[A]): List[B] =
+      Cons(el, xs.reverse).reverse
+    go(this)
 
   def reverse: List[A] =
     def go[A](xs: List[A], res: List[A] = Nil): List[A] =
@@ -83,6 +81,8 @@ enum Tree[+A]:
   case Leaf(key: A)
   case Branch(key:A ,left: Tree[A], right: Tree[A])
 
+
+
   override def toString: String =
     def go(sb: StringBuilder, xs: Tree[A]): String = {
       xs match {
@@ -100,52 +100,28 @@ enum Tree[+A]:
     }
     go(new StringBuilder(""), this)
 
+  def foldTree[A,B](tree: Tree[A], z: B)(f: (A,B) => B) : B=
+  {
+    tree match
+      case Empty => z
+      case Leaf(k) => f(k,z)
+      case Branch(k, xl, xr) =>
+        foldTree(xr, foldTree(xl,f(k,z))(f))(f)
+  }
+
   def toList: List[A] =
-    var listTree:List[A] = List.Nil
-    def go(xs: Tree[A],subRes: List[A] = List.Nil): Unit =
-      xs match
-        case Empty => Nil
-        case Leaf(k) =>
-          listTree = new List.Cons[A](k,subRes.reverse).reverse
-        case Branch(k, xl, xr) =>
-          listTree = new List.Cons[A](k,subRes.reverse).reverse
-          go(xl,listTree)
-          go(xr,listTree)
-    go(this)
-    listTree
+    foldTree(this,List.Nil:List[A]){ (k,subRes) => subRes.insert(k) }
 
   def toSet: Set[A] =
-    var setTree:Set[A] = Set.Empty
-    def go(xs: Tree[A],subRes: Set[A] = Set.Empty): Set[A] =
-      xs match
-        case Empty => setTree
-        case Leaf(k) =>
-          if setTree.unique(k) then
-            setTree = subRes.insert(k)
-          setTree
-        case Branch(k, xl, xr) =>
-          if setTree.unique(k) then
-            setTree = subRes.insert(k)
-          go(xl,setTree)
-          go(xr,setTree)
-    go(this)
+    foldTree(this,Set.empty){ (k,subRes) =>
+      if (subRes.unique(k)) then
+        subRes.insert(k)
+      else
+        subRes
+    }
 
-  def toBst(f: A => Int): BSTree=
-    var treeBS:BSTree = BSTree.EmptyBS
-    def go(xs: Tree[A],subRes: List[A] = List.Nil): BSTree =
-      xs match
-        case Empty => BSTree.EmptyBS
-        case Leaf(k) =>
-          treeBS = BSTree.insert(f(k),treeBS)
-          treeBS
-        case Branch(k, xl, xr) =>
-          treeBS = BSTree.insert(f(k),treeBS)
-          go(xl)
-          go(xr)
-          treeBS
-    go(this)
-
-
+  def toBst(h: A => Int): BSTree=
+    foldTree(this, BSTree.EmptyBS){ (k,subRes) => BSTree.insert(h(k),subRes) }
 
 object Tree:
   def apply[A](arr: Array[A]): Tree[A] =

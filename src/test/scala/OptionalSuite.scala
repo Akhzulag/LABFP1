@@ -5,7 +5,6 @@ import munit.FunSuite
 import scala.collection.mutable
 
 
-
 class OptionalSuite extends FunSuite {
   test("(Int) convert Tree to List") {
     val expected = List(3, 4, 5, 6, 7)
@@ -25,11 +24,6 @@ class OptionalSuite extends FunSuite {
     assertEquals(actual, expected)
   }
 
-  test("set insert"){
-    val expected = Set(3, 4, 6, 7, 5)
-    val actual:Set[Int] = Set(3).insert(4).insert(6).insert(7).insert(5)
-    assertEquals(actual,expected)
-  }
 
   test("(Int) convert Tree to Set") {
     val expected = Set(3, 4, 6, 7, 5)
