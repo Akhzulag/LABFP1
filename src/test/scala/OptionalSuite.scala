@@ -81,6 +81,34 @@ class OptionalSuite extends FunSuite {
     assertEquals(actual, expected)
   }
 
+  test("extreme Tree to Set"){
+    //BIG TEST
+    var i:Int = 1e5.toInt
+    val arr = new Array[Char](1e7.toInt)
+    for(i <- 0 to 1e7.toInt-1){
+      arr(i) = 's'
+      arr(i) = 's'
+    }
+    val expected = Set('s')
+    val actual = Tree(arr).toSet
+    assertEquals(actual, expected)
+  }
+
+  test("extreme Tree to Set"){
+    //BIG TEST
+    var i:Int = 1e5.toInt
+    val arr = new Array[Char](1e7.toInt)
+    for(i <- 0 to 1e7.toInt-1){
+      if i%2==0 then
+        arr(i) = 's'
+      else
+        arr(i) = 'a'
+    }
+    val expected = Set('s','a')
+    val actual = Tree(arr).toSet
+    assertEquals(actual, expected)
+  }
+
   test("(Int) convert Tree to BSTree") {
     val expected = BSTree(4,3,7,1,2,5)
     val actual = Tree(Array(4,3,7,1,2,5)).toBst( x => x )
@@ -158,4 +186,6 @@ class OptionalSuite extends FunSuite {
     val actual = Tree.Empty.toString
     assertEquals(actual, expected)
   }
+
+
 }
