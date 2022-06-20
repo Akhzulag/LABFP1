@@ -1,7 +1,7 @@
 package labfp
 
 import scala.collection.immutable
-import scala.collection.mutable
+
 
 enum Set[+A]:
   case Empty
@@ -133,13 +133,7 @@ object Tree:
         if(2*index+1 > size-1) then
           Leaf(arr(index))
         else
-          Branch(arr(index), go(2*index+1), {
-            if (!oneIn) then
-              oneIn=true
-              go(2*index+2)
-            else
-              Empty
-          })
+          Branch(arr(index), go(2*index+1), go(2*index+2))
       else
         Empty
     go(0)

@@ -6,6 +6,32 @@ import scala.collection.mutable
 
 
 class OptionalSuite extends FunSuite {
+
+  test("test Tree's constructor"){
+    val expected = Tree.Leaf(3)
+    val actual = Tree(Array(3))
+    assertEquals(actual, expected)
+  }
+
+  test("test Tree's constructor"){
+    val expected = Tree.Branch(1,Tree.Leaf(0),Tree.Empty)
+    val actual = Tree(Array(1,0))
+    assertEquals(actual, expected)
+  }
+
+  test("test Tree's constructor"){
+    val expected = Tree.Branch(1,Tree.Leaf(4),Tree.Leaf(3))
+    val actual = Tree(Array(1, 4, 3))
+    assertEquals(actual, expected)
+  }
+
+  test("test Tree's constructor"){
+    val expected = Tree.Branch(1,Tree.Branch(4,Tree.Branch(5,Tree.Leaf(7),Tree.Leaf(8)),Tree.Leaf(6)),Tree.Branch(3,Tree.Leaf(9),Tree.Leaf(10)))
+    val actual = Tree(Array(1,4,3,5,6,9,10,7,8))
+    assertEquals(actual, expected)
+  }
+
+
   test("(Int) convert Tree to List") {
     val expected = List(3, 4, 5, 6, 7)
     val actual = Tree(Array(3, 4, 7, 5, 6)).toList
@@ -40,6 +66,12 @@ class OptionalSuite extends FunSuite {
   test("(Char) convert Tree to Set") {
     val expected = Set('S', 'S', 'C', 'A')
     val actual = Tree(Array('S', 'S', 'S', 'S', 'C', 'A')).toSet
+    assertEquals(actual, expected)
+  }
+
+  test("(String) convert Tree to Set") {
+    val expected = Set("Tree","BSTree", "Set","List")
+    val actual = Tree(Array("Tree", "BSTree", "BSTree", "Set", "List", "List","Set")).toSet
     assertEquals(actual, expected)
   }
 
