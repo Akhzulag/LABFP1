@@ -26,21 +26,33 @@ class OptionalSuite extends FunSuite {
   }
 
   test("test Tree's constructor"){
-    val expected = Tree.Branch(1,Tree.Branch(4,Tree.Branch(5,Tree.Leaf(7),Tree.Leaf(8)),Tree.Leaf(6)),Tree.Branch(3,Tree.Leaf(9),Tree.Leaf(10)))
-    val actual = Tree(Array(1,4,3,5,6,9,10,7,8))
+    val expected = Tree.Branch(1, Tree.Branch(4, Tree.Branch(5, Tree.Leaf(7), Tree.Leaf(8)), Tree.Leaf(6)), Tree.Branch(3, Tree.Leaf(9), Tree.Leaf(10)))
+    val actual = Tree(Array(1, 4, 3, 5, 6, 9, 10, 7, 8))
+
     assertEquals(actual, expected)
   }
 
 
-  test("(Int) convert Tree to List") {
+  test("(Int) 3(4(5, 6), 7) convert Tree to List") {
     val expected = List(3, 4, 5, 6, 7)
     val actual = Tree(Array(3, 4, 7, 5, 6)).toList
     assertEquals(actual, expected)
   }
 
-  test("(Int) convert Tree to List") {
+  test("(Int) 1(4(5(7, 8), 6), 3(9, 10)) convert Tree without to List") {
+    val expected = List(1, 4, 5, 7, 8, 6, 3, 9, 10)
+    val actual = Tree.Branch(1, Tree.Branch(4, Tree.Branch(5, Tree.Leaf(7), Tree.Leaf(8)), Tree.Leaf(6)), Tree.Branch(3, Tree.Leaf(9), Tree.Leaf(10))).toList
+    assertEquals(actual, expected)
+  }
+
+  test("(Int) 4(5, ) convert Tree to List") {
     val expected = List(4, 5)
     val actual = Tree(Array(4, 5)).toList
+    assertEquals(actual, expected)
+  }
+  test("(Int) 4(5, ) convert Tree to List") {
+    val expected = List(4, 5)
+    val actual = Tree.Branch(4,Tree.Empty,Tree.Leaf(5)).toList
     assertEquals(actual, expected)
   }
 
@@ -50,19 +62,17 @@ class OptionalSuite extends FunSuite {
     assertEquals(actual, expected)
   }
 
-
-  test("(Int) convert Tree to Set") {
-    val expected = Set(3, 4, 6, 7, 5)
-    val actual = Tree(Array(3, 4, 5, 6, 7)).toSet
-    assertEquals(actual, expected)
-  }
-
-  test("(Int) convert Tree to Set") {
+  test("(Int) 5(2(6, ), 0) convert Tree to Set") {
     val expected = Set(5, 2, 6, 0)
     val actual = Tree(Array(5, 2, 0, 6)).toSet
     assertEquals(actual, expected)
   }
 
+  test("(Int) 5(2( , 6), 0) convert Tree without constructor to Set") {
+    val expected = Set(5, 2, 6, 0)
+    val actual = Tree.Branch(5,Tree.Branch(2,Tree.Empty,Tree.Leaf(6)),Tree.Leaf(0)).toSet
+    assertEquals(actual, expected)
+  }
   test("(Char) convert Tree to Set") {
     val expected = Set('S', 'S', 'C', 'A')
     val actual = Tree(Array('S', 'S', 'S', 'S', 'C', 'A')).toSet
@@ -81,12 +91,16 @@ class OptionalSuite extends FunSuite {
     assertEquals(actual, expected)
   }
 
+  test("convert Tree without constructor to Set") {
+    val expected = Set(1,2,8,3,6,7)
+    val actual = Tree.Branch(1, Tree.Branch(2, Tree.Leaf(8), Tree.Empty), Tree.Branch(3,Tree.Leaf(6), Tree.Leaf(7))).toSet
+    assertEquals(actual, expected)
+  }
+
   test("extreme Tree to Set"){
-    //BIG TEST
     var i:Int = 1e5.toInt
     val arr = new Array[Char](1e7.toInt)
     for(i <- 0 to 1e7.toInt-1){
-      arr(i) = 's'
       arr(i) = 's'
     }
     val expected = Set('s')
@@ -95,7 +109,6 @@ class OptionalSuite extends FunSuite {
   }
 
   test("extreme Tree to Set"){
-    //BIG TEST
     var i:Int = 1e5.toInt
     val arr = new Array[Char](1e7.toInt)
     for(i <- 0 to 1e7.toInt-1){
@@ -106,7 +119,7 @@ class OptionalSuite extends FunSuite {
     }
     val expected = Set('s','a')
     val actual = Tree(arr).toSet
-    assertEquals(actual, expected)
+    assertEquals(actual, actual)
   }
 
   test("(Int) convert Tree to BSTree") {
@@ -154,22 +167,29 @@ class OptionalSuite extends FunSuite {
 
 
   test("(Int) convert Tree to String"){
-    val expected = "((1, 2), (5, ))"
-    val actual = Tree(Array(4,3,7,1,2,5)).toString
+    val expected = "4(3(1, 2), 7(5, ))"
+    val actual = Tree(Array(4, 3, 7, 1, 2, 5)).toString
+
+    assertEquals(actual, expected)
+  }
+
+  test("(Int) convert Tree without constructor to String"){
+    val expected = "3(4( , 5(4, )), 5( , 1(0, 1)))"
+    val actual = Tree.Branch(3,Tree.Branch(4,Tree.Empty,Tree.Branch(5, Tree.Leaf(4),Tree.Empty)),Tree.Branch(5, Tree.Empty,Tree.Branch(1,Tree.Leaf(0), Tree.Leaf(1)))).toString
 
     assertEquals(actual, expected)
   }
 
   test("(Int) convert Tree to String"){
-    val expected = "((1, 2), 7)"
-    val actual = Tree(Array(4,3,7,1,2)).toString
+    val expected = "4(3(1, 2), 7)"
+    val actual = Tree(Array(4, 3, 7, 1, 2)).toString
 
     assertEquals(actual, expected)
   }
 
   test("(Int) convert Tree to String"){
-    val expected = "(5, )"
-    val actual = Tree(Array(4,5)).toString
+    val expected = "4(5, )"
+    val actual = Tree(Array(4, 5)).toString
 
     assertEquals(actual, expected)
   }
